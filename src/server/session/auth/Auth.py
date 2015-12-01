@@ -2,6 +2,7 @@
 
 import md5
 
+
 class Auth:
 
     def __init__(self):

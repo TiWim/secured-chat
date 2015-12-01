@@ -3,24 +3,23 @@ from threading import Thread
 from sys import argv
 from Queue import Queue
 import os.path
+
 from cipher.RSA import RSA
-from cipher.Plain  import Plain
+from cipher.Plain import Plain
 from cipher.DES import ClientDES
-from time import sleep
 
-
-addr = "127.0.0.1"
-port = 5000
-y = 124
+ADDR = "127.0.0.1"
+PORT = 5000
 
 
 class Client():
     nick = "guest"
     encryption = ""
 
-    def __init__(self, addr, port):
+    def __init__(self, ADDR, PORT):
         self.sock = socket(AF_INET, SOCK_STREAM)
-        self.sock.connect((addr, port))
+        self.sock.connect((ADDR, PORT))
+
         if os.path.isfile("config"):
             with open("config", "r") as liste:
                 for elt in liste.readlines():
@@ -28,7 +27,7 @@ class Client():
                         self.nick = elt.split("nick=")[1].strip()
 
     def sendMsg(self, queue):
-    	while True:
+        while True:
             data = raw_input(self.nick + " > ")
 
             ciphertext = self.encryption.encipher(self.nick + " " + data)
@@ -39,7 +38,7 @@ class Client():
                 self.close()
 
     def recvMsg(self, queue):
-    	while True:
+        while True:
 
             if not queue.empty():
                 self.close()
@@ -50,7 +49,6 @@ class Client():
             elif queue.empty():
                 print "<", data
 
-
     def close(self):
         exit()
 
@@ -60,15 +58,16 @@ if __name__ == "__main__":
 
     if len(argv) == 2:
         try:
-            port = int(argv[1])
+            PORT = int(argv[1])
         except:
             pass
     if len(argv) == 3:
-        addr = argv[1]
-        port = int(argv[2])
+        ADDR = argv[1]
+        PORT = int(argv[2])
 
-    client = Client(addr, port)
+    client = Client(ADDR, PORT)
 
+    # encryption
     if "DES" in argv:
         client.sock.send("DES")
         client.encryption = ClientDES()
@@ -78,14 +77,11 @@ if __name__ == "__main__":
 
     client.encryption.generateKey(client.sock)
 
-    t1=Thread(target=client.sendMsg, args=(queue,))
-    t1.start()
+    # start Threads for listening and receiving messages
+    Thread(target=client.sendMsg, args=(queue,)).start()
 
-    client.recvMsg(queue)  # creating a second thread for this task is not necessary
-
-
-    # Ending all client processes
-    t1.join()
+    # creating a second thread for this task is not necessary
+    client.recvMsg(queue)
 
     client.sock.shutdown()
     client.sock.close()

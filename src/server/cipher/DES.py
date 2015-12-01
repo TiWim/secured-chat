@@ -2,10 +2,8 @@
 from pyDes import *
 from Cipher import Cipher
 
-class DH(Cipher):
 
-    def __init__(self):
-        pass
+class DH(Cipher):
 
     def encipher(self, data):
         return self.privkey.encrypt(data)

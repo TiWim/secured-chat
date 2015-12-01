@@ -4,6 +4,7 @@ import md5
 from string import ascii_letters
 from Role import Role
 
+
 class Spectator(Role):
 
     def __init__(self, clientSock, address):

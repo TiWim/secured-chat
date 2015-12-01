@@ -31,3 +31,63 @@ Client connects.
 Chiffrement des communications -> Inutile
 chiffrement lors de l'échange de mots de passes?
 
+.
+├── bin
+├── config.mk
+├── doc
+│   ├── chat.graphml
+│   ├── chat.png
+│   ├── projectChat.jpg
+│   └── v2.jpg
+├── Makefile
+├── README.md
+├── src
+│   ├── client
+│   │   ├── cipher -> ../server/cipher/
+│   │   └── client.py
+│   └── server
+│       ├── ban_list
+│       ├── cipher
+│       │   ├── AES.py
+│       │   ├── Cipher.py
+│       │   ├── Cipher.pyc
+│       │   ├── DES.py
+│       │   ├── DH.pyc
+│       │   ├── __init__.py
+│       │   ├── __init__.pyc
+│       │   ├── Plain.py
+│       │   ├── Plain.pyc
+│       │   ├── RSA.py
+│       │   └── RSA.pyc
+│       ├── logins.txt
+│       ├── server.py
+│       └── session
+│           ├── Admin.py
+│           ├── Admin.pyc
+│           ├── auth
+│           │   ├── Auth.py
+│           │   ├── __init__.py
+│           │   ├── __init__.pyc
+│           │   ├── Pass.py
+│           │   ├── Pass.pyc
+│           │   ├── RSA.py
+│           │   └── RSA.pyc
+│           ├── __init__.py
+│           ├── __init__.pyc
+│           ├── Role.py
+│           ├── Role.pyc
+│           ├── Spectator.py
+│           ├── Spectator.pyc
+│           └── Voice.py
+├── test
+│   ├── clientA
+│   │   ├── client.py -> ../../src/client/client.py
+│   │   └── config
+│   ├── clientB
+│   │   ├── client.py -> ../../src/client/client.py
+│   │   └── config
+│   └── clientC
+│       └── client.py -> ../../src/client/client.py
+└── todo
+
+13 directories, 44 files

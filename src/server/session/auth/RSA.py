@@ -1,7 +1,9 @@
 #! /usr/bin/python2.7
 
-class RSA():
+from Auth import Auth
 
 
-    def __init__(self):
+class RSA(Auth):
+
+    def identify(self, data):
         pass

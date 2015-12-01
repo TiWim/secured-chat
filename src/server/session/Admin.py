@@ -2,6 +2,7 @@
 import os.path
 from Role import Role
 
+
 class Admin(Role):
 
     def __init__(self, client):
