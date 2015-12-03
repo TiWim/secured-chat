@@ -1,17 +1,20 @@
 #! /usr/bin/python2.7
 from Auth import Auth
-
+import md5
 
 class Pass(Auth):
 
-    def identify(self, data):
+    def identify(self, data, client):
+        """
+        Method to autenticate on the server
+        Callable with the command:
+        /identify password
+        passwords are hashed with md5 algorithm
+        """
         logged = False
         answer = ""
-        data = data.split(" ")
         nick = data[0]
-        password = data[2]
-
-        password = md5.new(password).hexdigest()
+        password = md5.new(data[2]).hexdigest()
 
         # we open the file to check if the person exists
         with open("logins.txt", "r") as liste:
@@ -20,7 +23,7 @@ class Pass(Auth):
                 line = line.strip().split(" ")
                 # if it matches, we pick-up the level.
                 if line[1] == nick and line[2] == password:
-                    self.level = int(line[0])
+                    client.level = int(line[0])
                     logged = True
 
         if logged:

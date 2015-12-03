@@ -1,2 +1,5 @@
-.*.swp
 *.pyc
+*.pem
+src/server/keys/
+src/server/logins.txt
+*.swp

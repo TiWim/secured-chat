@@ -3,7 +3,7 @@ from pyDes import *
 from Cipher import Cipher
 
 
-class DH(Cipher):
+class DES(Cipher):
 
     def encipher(self, data):
         return self.privkey.encrypt(data)
@@ -36,7 +36,7 @@ class DH(Cipher):
         self.privkey = des(str(key)[:8], CBC, b"\0\0\0\0\0\0\0\0", pad=None, padmode=PAD_PKCS5)
 
 
-class ClientDH(DH):
+class ClientDES(DES):
 
     def generateKey(self, sock):
         """

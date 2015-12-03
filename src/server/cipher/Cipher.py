@@ -5,7 +5,7 @@ class Cipher:
     pubkey = ""
     privkey = ""
 
-    def __init__():
+    def __init__(self):
         pass
 
     def encipher(self, data):

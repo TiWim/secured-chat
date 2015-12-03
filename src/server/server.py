@@ -3,8 +3,7 @@ from threading import Thread
 from sys import argv
 from Queue import Queue
 
-from session.Spectator import Spectator
-from session.Admin import Admin
+from User import User
 
 from cipher.RSA import RSA
 from cipher.DES import DES
@@ -18,7 +17,8 @@ MAX_CLIENTS = 20
 
 class Server():
     """
-    Server is multi threaded. It means that the object is shared between different threads.
+    Server is multi threaded. It means that the object is shared between
+    different threads.
     """
     liste = []
 
@@ -42,63 +42,15 @@ class Server():
             for element in self.liste:
                 ciphertext = element.encryption.encipher(output)
                 try:
+                    print output, ciphertext
                     element.clientSock.send(ciphertext)
                 except IOError as err:
                     print err
                     self.liste.remove(element)
 
-    def recvMsg(self, client, queue):
-        """
-        client send message to server
-        Here, we have to check its rights to know what to do from the message.
-        """
-        sock = client.clientSock
-        listening = True
-
-        while listening:
-            response = sock.recv(3000)
-            data = ""
-            data = client.encryption.decipher(response)
-            data = data.split(" ")
-
-            if len(data) == 1:
-                # not concerned here by these packets
-                continue
-
-            elif len(data) >= 2 and data[1] == "/identify":
-                sock.send(client.identify(data))
-
-                # change Session class
-                if client.level == 10:
-                    self.liste.remove(client)
-                    client = Admin(client)
-                    self.addClient(client)
-
-            elif data[0] == "/register" and len(data) == 3:
-                result = client.register(data[1], data[2])
-
-            elif data[1] == "/nick":
-                sock.send("newNick:" + data[2])
-                queue.put(str(" " + data[0] + " is now known as " + data[2]).split(" "))
-
-            elif data[1] == "/quit":
-                listening = False
-
-            elif data[1] == "/ban" and client.level > 5 and len(data) == 3:
-                queue.put(str(" " + data[2] + " has been banned").split(" "))
-                client.ban(data[2])
-
-            elif client.level > 3:
-                queue.put(data)
-
-            else:
-                sock.send("You have no right to talk!")
-
-        self.close(client)
-
     def accept(self):
-        clientSock, ADDRess = self.sock.accept()
-        return Spectator(clientSock, ADDRess)
+        clientSock, address = self.sock.accept()
+        return User(clientSock, address)
 
     def listen(self, numclients):
         self.numClients = numclients
@@ -137,12 +89,14 @@ if __name__ == "__main__":
     # main thread waiting for clients
     while len(server.liste) <= MAX_CLIENTS:
         client = server.accept()
-        print "New client", client.ADDRess
-        method = client.clientSock.recv(20)
+        print "New client", client.address
 
         # begin cipher process here
+        method = client.clientSock.recv(20)
         if method == "DES":
             client.encryption = DES()
+        elif method == "PLAIN":
+            client.encryption = Plain()
         elif method == "RSA":
             client.encryption = RSA()
         else:
@@ -151,6 +105,6 @@ if __name__ == "__main__":
         client.encryption.generateKey(client.clientSock)
 
         # launch new thread for messages reception
-        Thread(target=server.recvMsg, args=(client, queue,)).start()
+        Thread(target=client.recvMsg, args=(queue,)).start()
 
         server.addClient(client)
