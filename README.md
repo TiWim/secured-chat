@@ -1,23 +1,35 @@
+# Chat sécurisé:
+
+Pour lancer le serveur : (src/server)
+python server.py <port>
+
+pour l'arrêter : kill server.py dans une console (Je n'ai rien prévu pour l'arrêter)
+
+Pour lancer le client : (src/client)
+python client.py <address> <port> <cipher>
+python client.py <port> <cipher>
+python client.py <cipher>
+python client.py <port>
+
+Côté client, vous avez le choix des commandes.
 
 
+Interaction :
+pour quitter : "/quit"
+pour s'identifier : "/identify password"
+                    "/identify RSA"
+pour changer de login : "/nick newnick"
+pour s'enregister : "/register password"
 
 
 ## Description
 
-Un serveur et plusieurs client. Le serveur tient le role de salon de chat.
+Il y a un serveur et plusieurs client. Le serveur tient le rôle de salon de chat.
 Les clients se connectent au serveur  et  établissent échange de clefs selon le protocole spécifié par le client. (Diffie Hellman ou RSA)
-La clef publique sera détenue par le client, la clef privée par le serveur.
 
-## #### role, single access point, session, proxy, strategie
+##  Patterns
 
-
-###### TODO
-refaire l'authentification. Seulement par mot de passe pour l'instant. Interfacable
-
-###### Store passwords and logins in a database on server side
-
-####### Client: two threads Main and Send. main forks and makes reception.
-
+Role, single access point, session, proxy, strategie
 
 
 ## Role implementation:
@@ -35,63 +47,5 @@ Client connects.
 Chiffrement des communications -> Inutile
 chiffrement lors de l'échange de mots de passes?
 
-.
-├── bin
-├── config.mk
-├── doc
-│   ├── chat.graphml
-│   ├── chat.png
-│   ├── projectChat.jpg
-│   └── v2.jpg
-├── Makefile
-├── README.md
-├── src
-│   ├── client
-│   │   ├── cipher -> ../server/cipher/
-│   │   └── client.py
-│   └── server
-│       ├── ban_list
-│       ├── cipher
-│       │   ├── AES.py
-│       │   ├── Cipher.py
-│       │   ├── Cipher.pyc
-│       │   ├── DES.py
-│       │   ├── DH.pyc
-│       │   ├── __init__.py
-│       │   ├── __init__.pyc
-│       │   ├── Plain.py
-│       │   ├── Plain.pyc
-│       │   ├── RSA.py
-│       │   └── RSA.pyc
-│       ├── logins.txt
-│       ├── server.py
-│       └── session
-│           ├── Admin.py
-│           ├── Admin.pyc
-│           ├── auth
-│           │   ├── Auth.py
-│           │   ├── __init__.py
-│           │   ├── __init__.pyc
-│           │   ├── Pass.py
-│           │   ├── Pass.pyc
-│           │   ├── RSA.py
-│           │   └── RSA.pyc
-│           ├── __init__.py
-│           ├── __init__.pyc
-│           ├── Role.py
-│           ├── Role.pyc
-│           ├── Spectator.py
-│           ├── Spectator.pyc
-│           └── Voice.py
-├── test
-│   ├── clientA
-│   │   ├── client.py -> ../../src/client/client.py
-│   │   └── config
-│   ├── clientB
-│   │   ├── client.py -> ../../src/client/client.py
-│   │   └── config
-│   └── clientC
-│       └── client.py -> ../../src/client/client.py
-└── todo
+python -i file > interact
 
-13 directories, 44 files

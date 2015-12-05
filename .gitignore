@@ -7,3 +7,6 @@ test/clientA/config test/clientB/config test/clientC/config
 test/clientA/config
 test/clientC/config
 src/server/ban_list
+rapport.*
+.idea
+*.html

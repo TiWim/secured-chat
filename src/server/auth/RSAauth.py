@@ -3,6 +3,7 @@ import os.path
 from Auth import Auth
 import rsa
 import cPickle
+from random import randint
 
 FOLDER = "keys"
 
@@ -28,14 +29,16 @@ class RSAauth(Auth):
         if os.path.isfile(keypass):
             with open(keypass, "r") as fichier:
                 pubkey = cPickle.loads(fichier.read())
-                challenge = "hello"
+                challenge = str(randint(0, 100000))
                 encript = rsa.encrypt(challenge, pubkey)
                 print "sending challenge"
                 sock.send("RSA " + encript)
                 print "chall sent"
                 response = sock.recv(2000)
                 if response == challenge:
-                    print "Yeah"
+                    print "User successfully identified"
+                    msg = client.encryption.encipher("You are identified")
+                    client.clientSock.send(msg)
                     identified = True
         else:
             print "Wrong path"

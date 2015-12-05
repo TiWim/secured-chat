@@ -1,14 +1,7 @@
-from socket import *
-from threading import Thread
-from sys import argv
-from Queue import Queue
+#! /usr/bin/python2.7
 
 from session.Spectator import Spectator
 from session.Admin import Admin
-
-from cipher.RSA import RSA
-from cipher.DES import DES
-from cipher.Plain import Plain
 
 from auth.RSAauth import RSAauth
 from auth.Pass import Pass
@@ -27,26 +20,35 @@ class User():
         self.clientSock = sock
         self.address = address
 
-    def recvMsg(self, queue):
+    def recvMsg(self, userList, queue):
         """
         client send message to server
         Here, we have to check its rights to know what to do from the message.
         Every message should begin with the nickname, followed by an action or
         the message to post.
+
+        This is also a message dispatcher
         """
         sock = self.clientSock
-        listening = True
+        userListning = True
         role = self.role
-        while listening:
+        while userListning:
             response = sock.recv(3000)
             data = ""
-            data = self.encryption.decipher(response)
-            data = data.split(" ")
+            try:
+                data = self.encryption.decipher(response)
+            except:
+                # If there is any problem, we disconnect the user
+                # Normally, it happens if the user disconnected
+                print "Exception in RSA.decipher()!"
+                break
+
             print data
+            data = data.split(" ")
 
             if len(data) == 1:
-                print data
                 # not concerned here by these packets
+                print data
                 continue
 
             elif data[1] == "/identify" and len(data) == 3:
@@ -57,16 +59,15 @@ class User():
                     authentication = RSAauth()
                 else:
                     authentication = Pass()
-                print authentication
+
                 response = authentication.identify(data, self)
                 print response
+
                 # change Session class
                 if self.level == 10:
                     print "coucou"
                     # change this
-                    #self.liste.remove(client)
-                    #client = Admin(client)
-                    #self.addClient(client)
+                    role = Admin()
 
             elif data[1] == "/register" and len(data) == 3:
                 result = role.register(data[0], data[2], sock)
@@ -80,7 +81,7 @@ class User():
 
             elif data[1] == "/quit":
                 sock.send("quit")
-                listening = False
+                userListning = False
 
             elif data[1] == "/ban" and self.level > 5 and len(data) == 3:
                 queue.put(str(" " + data[2] + " has been banned").split(" "))
@@ -94,14 +95,14 @@ class User():
                 print "No right to talk"
                 sock.send(self.encryption.encipher("You have no right to talk!"))
 
-        self.close()
+        self.close(userList)
 
-    def close(self):
+    def close(self, userList):
         """
         not working yet
         """
         print "recv close"
         self.clientSock.send("OK")
         self.clientSock.close()
-        #self.liste.remove(client)
+        userList.remove(self)
         exit()

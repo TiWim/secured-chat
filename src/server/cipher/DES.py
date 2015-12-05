@@ -1,7 +1,7 @@
 #! /usr/bin/python
 from pyDes import *
 from Cipher import Cipher
-
+from random import randint
 
 class DES(Cipher):
 
@@ -25,7 +25,7 @@ class DES(Cipher):
         K 8 first bytes will be used for DES encryption
         """
         g, p = 11111111111111111111111111, 22222222222222222222222
-        x = 1012
+        x = randint(0, 100000)
 
         sock.send(str(g) + " " + str(p))
         Y = int(sock.recv(1024))
@@ -46,7 +46,7 @@ class ClientDES(DES):
         At the end, we compute K = Y^x = X^y.
         K 8 first bytes will be used for DES encryption
         """
-        y = 124
+        y = randint(0, 100000)
         data = sock.recv(1024).split(" ")
         g = int(data[0])
         p = int(data[1])

@@ -1,3 +1,4 @@
+#! /usr/bin/python2.7
 from socket import *
 from threading import Thread
 from sys import argv
@@ -65,12 +66,12 @@ class Client():
                 continue
             else:
                 data = self.encryption.decipher(data)
-            print "DEBUG", data
+            # print "DEBUG", data
             if "newNick:" in data:
-                print "DEBUG", data
+                # print "DEBUG", data
                 self.nick = data.split(":")[1]
             elif queue.empty():
-                print "<", data
+                print data
 
     def identify(self, data, ciphertext):
         """
@@ -128,7 +129,9 @@ class Client():
 
 if __name__ == "__main__":
     queue = Queue()
-
+#    parser = optparse.OptionParser()
+#    parser.add_option('-p', dest=PORT, help='modulus', type='int')
+#    parser.add_option('-a', dest=ADDR, help='public exponent', type='int')
     if len(argv) == 2:
         try:
             PORT = int(argv[1])

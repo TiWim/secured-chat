@@ -1,3 +1,4 @@
+#! /usr/bin/python2.7
 from socket import *
 from threading import Thread
 from sys import argv
@@ -20,7 +21,7 @@ class Server():
     Server is multi threaded. It means that the object is shared between
     different threads.
     """
-    liste = []
+    userList = []
 
     def __init__(self, ADDR, PORT):
         self.sock = socket(AF_INET, SOCK_STREAM)
@@ -39,14 +40,13 @@ class Server():
             data.remove(data[0])
             for elt in data:
                 output += " " + elt
-            for element in self.liste:
+            for element in self.userList:
                 ciphertext = element.encryption.encipher(output)
                 try:
-                    print output, ciphertext
                     element.clientSock.send(ciphertext)
                 except IOError as err:
                     print err
-                    self.liste.remove(element)
+                    self.userList.remove(element)
 
     def accept(self):
         clientSock, address = self.sock.accept()
@@ -57,17 +57,7 @@ class Server():
         self.sock.listen(numclients)
 
     def addClient(self, client):
-        self.liste.append(client)
-
-    def close(self, client):
-        """
-        not working yet
-        """
-        print "recv close"
-        client.clientSock.send("OK")
-        client.clientSock.close()
-        self.liste.remove(client)
-        exit()
+        self.userList.append(client)
 
 
 if __name__ == "__main__":
@@ -87,7 +77,7 @@ if __name__ == "__main__":
     print "Waiting for clients on port", PORT
 
     # main thread waiting for clients
-    while len(server.liste) <= MAX_CLIENTS:
+    while len(server.userList) <= MAX_CLIENTS:
         client = server.accept()
         print "New client", client.address
 
@@ -105,6 +95,6 @@ if __name__ == "__main__":
         client.encryption.generateKey(client.clientSock)
 
         # launch new thread for messages reception
-        Thread(target=client.recvMsg, args=(queue,)).start()
+        Thread(target=client.recvMsg, args=(server.userList, queue,)).start()
 
         server.addClient(client)

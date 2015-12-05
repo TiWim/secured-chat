@@ -1,4 +1,5 @@
 #! /usr/bin/python2.7
+
 import os.path
 from Role import Role
 
